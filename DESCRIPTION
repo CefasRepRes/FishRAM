@@ -1,0 +1,17 @@
+Package: FiRAM
+Title: Fisheries Resource Allocation Model
+Version: 0.0.1.0
+Authors@R: 
+    c(person("James", "Martindale", "A", "james.martindale@cefas.co.uk", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1913-5592")),
+    person("Hannah", "Tidbury", "hannah.tidbury@cefas.co.uk", role = "ctb"),
+    person("Angela", "Muench", "angela.muench@cefas.co.uk", role = "ctb"))
+Description: The `FiRAM` model simulates behaviour of commercial and recreational fishing fleets to balance biological and economic goals.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

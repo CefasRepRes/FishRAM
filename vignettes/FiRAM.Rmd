@@ -1,0 +1,75 @@
+---
+title: "FiRAM"
+subtitle: Fisheries Resource Allocation Model
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FiRAM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: Tidbury2021
+  title: "Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries"
+  author: 
+   - family: Tidbury
+     given: Hannah J
+   - family: Muench
+     given: Angela
+   - family: Lamb
+     given: Philip D
+   - family: Hyder
+     given: Kieran
+
+  container-title: ICES Journal of Marine Science
+  volume: 78
+  page: 1793-1803
+  type: article-journal 
+  issued: 
+    year: 2021  
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FiRAM)
+```
+# Introduction 
+
+* What is the model?
+* What is this document?
+
+# Setting up the model
+
+* Loading in saved parameters
+  + Changing some parameters
+  + Maybe more??
+* Defining custom `BioeconomicParams` objects from a file
+
+In `FiRAM`, model parameters are contained in objects of class `BioeconomicParams`. MORE WORDS HERE.... Parameters from the Sea Bass fishery studied in @Tidbury2021 is included in the package and can be loaded from the `"seabass"`dataset.
+
+# Running the model
+
+## Specifying recruitment
+* Different recruitment specifications.
+* Making plots.
+
+
+We can load in some parameter values
+```{r load_data}
+data("seabass")
+```
+Then we run it
+```{r run_sim}
+sim <- project(params, R = 1000, t_start= 2000, t_end = 2040)
+```
+Then we plot it
+```{r fig.dim = c(7, 8)}
+plot(sim)
+```
+
+
+# References
