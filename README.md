@@ -11,7 +11,7 @@ install_github("CefasRepRes/FiRAM")
 
 ## Example
 
-To get started with `FiRAM`, 
+To get started with `FiRAM`, the `"seabass"` dataset contained in the package contains the `BioeconomicParams` object encapsulating the parameters for the Sea Bass fishery studied in Tidbury et al. (2021). This can be loaded in and a simulation run as follows:
 
 ``` r
 library(FiRAM)
