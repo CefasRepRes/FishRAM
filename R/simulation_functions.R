@@ -10,10 +10,9 @@ step = function(sim, t){
     stop("Invalid states detected.")
   }
 
-
   #Step 1. Work out the number of trips that should occur
   #Commercial trips
-  previous_profit <- previous_states$tau #TODO: What is the right thing to do here??????
+  previous_profit <- previous_states$tau
   if(t > 2){
     previous_profit <- sim@states[t - 2, ]$tau
   }
@@ -51,14 +50,7 @@ step = function(sim, t){
   states$ZA <- params@muA + (1-params@varphi * params@delta)*states$FR +  (1 - params@Gamma * params@eta)*states$FC
   states$SA = exp(-states$ZA)*previous_states$SA + previous_states$D*previous_states$SJ
 
-  #TODO: Remove
-  #states$SA = previous_states$SA + previous_states$D*previous_states$SJ - (1 - exp(-params@muA))*previous_states$SA - (1-params@varphi * params@delta) * (1 - exp(-states$FR))* previous_states$SA - (1 - params@Gamma * params@eta)*(1 - exp(-states$FC))*previous_states$SA
-  #states$ZA <- params@muA + (1-params@varphi * params@delta)*states$FR +  (1 - params@Gamma * params@eta)*states$FC
-  #states$SA = exp(-(params@muA + (1-params@varphi * params@delta)*states$FR +  (1 - params@Gamma * params@eta)*states$FC))*previous_states$SA + previous_states$D*previous_states$SJ
-  #states$SA = exp(-states$ZA)*previous_states$SA + previous_states$D*previous_states$SJ
-
-
-  states$D <- exp(-6*params@muJ)#TODO : How should this behave?
+  states$D <- exp(-6*params@muJ)
   if(t > 5){
     states$D <- exp(-6*params@muJ) * sim@states[t - 5, "R"]/ states$SJ
   }
@@ -80,17 +72,36 @@ step = function(sim, t){
   return(states)
 }
 
-#' Project a bioeconomic simulation
+#' Project a FiRAM simulation.
+#'
+#' Runs the FiRAM model for a specified recruitment scenario. Full details of the model specification can be found in the supporting information of Tidbury et al. (2021), However some details have been extended for this package (see details below)
 #' @param params An object of type `BioeconomicParams` encoding the model parameters.
-#' @param R The recruitment of the stock across the simulation. See details
+#' @param R A `numeric` of `function` specifying the recruitment of the stock across the simulation. See details
 #' @param t_start The year which forms the start of the simulation. The default is 1.
 #' @param t_end The year which forms the end of the simulation. The default is `length(R) + t_start - 1`
-#' @param R_init The initial recruitment value. Only required if `R` is a function of stock size.
+#' @param R_init The initial recruitment value. Only required if `R` is a function.
+#' @return An object of class [BioeconomicSim]
 #' @details
 #' Recruitment can be specified in 3 ways using different forms of the `R` parameter:
-#' * A `numeric` of length 1, giving the constant recruitment across the entire duration of the simulation.
+#' * A `numeric` of length 1, giving the constant recruitment across the duration of the simulation.
 #' * A `numeric` of length `t_end - t_start + 1`, specifying the recruitment at each time step of the simulation.
-#' * A `function` which calculates recruitment from the adult stock size at each time step. This function should have exactly one argument (the adult stock size) and return a `numeric` of length 1.
+#' * A `function` which calculates recruitment from the adult stock size at each time step. This function should have exactly one argument (the adult stock size) and return a `numeric` of length 1. If using a function, the `R_init` argument should also be passed through to specify the initial recruitment at the start of the simulation.
+#'
+#'
+#' @section Model extensions:
+#' *Mortality reparametrisation.* To allow for a larger range of mortalities, the mortality in `FiRAM` is parametrised differently to the mortality in Tidbury et al. (2021). The stock dynamics for the adult population are instead calculated through
+#' \deqn{S_{A, t} = \exp(M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t})S_{A, t-1} + D_{t}S_{J, t}}.
+#' With the landings of each fleet now calculated as
+#' \deqn{L_{R, t} = W_C \frac{(1-\delta)F_{R, t}}{M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t}}S_{A, t}}
+#' \deqn{L_{C, t} = W_C \frac{(1-\eta)F_{C, t}}{M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t}}S_{A, t}}
+#' This is equivalent to assuming that all mortalities (commercial, recreational, and natural) are applied simultaneously to the adult stock.
+#'
+#' *Initial values*
+#' For the first 5 years of the simulation, some quantities relying on the history of simulation are calculated differently, by assuming some values were static prior to the start of the simulation.
+#' * Number of trips. The number of trips of the commercial fleet \eqn{T_C} depends on the profit of the fleet from 2 years ago. The commercial fleet profit is therefore assumed to be constant before the simulation starts (i.e. for time \eqn{t <= 0}) to ensure that \eqn{T_C} can be calculated for the first 2 years.
+#' * Maturation. The fraction of juveniles maturing into adults in a given year \eqn{D_t} is estimated from the recruitment values from 5 years previously. Recruitment is therefore assumed to be constant before the start of the simulation so that $D_t$ can be calculated for the first 5 years.
+#'
+#' @references Hannah J Tidbury, Angela Muench, Philip D Lamb, Kieran Hyder, Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries, *ICES Journal of Marine Science*, Volume 78, Issue 5, August 2021, Pages 1793-1803
 #' @export
 #' @examples
 #' #loads in the relevant parameters
@@ -108,8 +119,7 @@ step = function(sim, t){
 #'   )
 #' }
 #' sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4)
-project = function(params, R, t_start = 1, t_end = (length(R) + t_start - 1), R_init = NULL)
-{
+project = function(params, R, t_start = 1, t_end = (length(R) + t_start - 1), R_init = NULL){
   t_max <- t_end - t_start + 1
 
   if(!is(params, "BioeconomicParams")){

@@ -11,7 +11,7 @@ An object of class \code{"BioeconomicParams"}.
 data("seabass")
 }
 \description{
-A dataset containing the fitted parameters for the Sea Bass fisheries
+A dataset containing the fitted parameters for the Sea Bass fisheries from Tidbury et al. (2021).
 }
 \examples{
 data("seabass")

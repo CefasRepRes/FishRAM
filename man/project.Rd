@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulation_functions.R
 \name{project}
 \alias{project}
-\title{Project a bioeconomic simulation}
+\title{Project a FiRAM simulation.}
 \usage{
 project(
   params,
@@ -15,25 +15,45 @@ project(
 \arguments{
 \item{params}{An object of type \code{BioeconomicParams} encoding the model parameters.}
 
-\item{R}{The recruitment of the stock across the simulation. See details}
+\item{R}{A \code{numeric} of \code{function} specifying the recruitment of the stock across the simulation. See details}
 
 \item{t_start}{The year which forms the start of the simulation. The default is 1.}
 
 \item{t_end}{The year which forms the end of the simulation. The default is \code{length(R) + t_start - 1}}
 
-\item{R_init}{The initial recruitment value. Only required if \code{R} is a function of stock size.}
+\item{R_init}{The initial recruitment value. Only required if \code{R} is a function.}
+}
+\value{
+An object of class \link{BioeconomicSim}
 }
 \description{
-Project a bioeconomic simulation
+Runs the FiRAM model for a specified recruitment scenario. Full details of the model specification can be found in the supporting information of Tidbury et al. (2021), However some details have been extended for this package (see details below)
 }
 \details{
 Recruitment can be specified in 3 ways using different forms of the \code{R} parameter:
 \itemize{
-\item A \code{numeric} of length 1, giving the constant recruitment across the entire duration of the simulation.
+\item A \code{numeric} of length 1, giving the constant recruitment across the duration of the simulation.
 \item A \code{numeric} of length \code{t_end - t_start + 1}, specifying the recruitment at each time step of the simulation.
-\item A \code{function} which calculates recruitment from the adult stock size at each time step. This function should have exactly one argument (the adult stock size) and return a \code{numeric} of length 1.
+\item A \code{function} which calculates recruitment from the adult stock size at each time step. This function should have exactly one argument (the adult stock size) and return a \code{numeric} of length 1. If using a function, the \code{R_init} argument should also be passed through to specify the initial recruitment at the start of the simulation.
 }
 }
+\section{Model extensions}{
+
+\emph{Mortality reparametrisation.} To allow for a larger range of mortalities, the mortality in \code{FiRAM} is parametrised differently to the mortality in Tidbury et al. (2021). The stock dynamics for the adult population are instead calculated through
+\deqn{S_{A, t} = \exp(M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t})S_{A, t-1} + D_{t}S_{J, t}}.
+With the landings of each fleet now calculated as
+\deqn{L_{R, t} = W_C \frac{(1-\delta)F_{R, t}}{M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t}}S_{A, t}}
+\deqn{L_{C, t} = W_C \frac{(1-\eta)F_{C, t}}{M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t}}S_{A, t}}
+This is equivalent to assuming that all mortalities (commercial, recreational, and natural) are applied simultaneously to the adult stock.
+
+\emph{Initial values}
+For the first 5 years of the simulation, some quantities relying on the history of simulation are calculated differently, by assuming some values were static prior to the start of the simulation.
+\itemize{
+\item Number of trips. The number of trips of the commercial fleet \eqn{T_C} depends on the profit of the fleet from 2 years ago. The commercial fleet profit is therefore assumed to be constant before the simulation starts (i.e. for time \eqn{t <= 0}) to ensure that \eqn{T_C} can be calculated for the first 2 years.
+\item Maturation. The fraction of juveniles maturing into adults in a given year \eqn{D_t} is estimated from the recruitment values from 5 years previously. Recruitment is therefore assumed to be constant before the start of the simulation so that $D_t$ can be calculated for the first 5 years.
+}
+}
+
 \examples{
 #loads in the relevant parameters
 data("seabass")
@@ -50,4 +70,7 @@ rec_func <- function(stock){
   )
 }
 sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4)
+}
+\references{
+Hannah J Tidbury, Angela Muench, Philip D Lamb, Kieran Hyder, Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries, \emph{ICES Journal of Marine Science}, Volume 78, Issue 5, August 2021, Pages 1793-1803
 }

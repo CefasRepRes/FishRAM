@@ -1,6 +1,6 @@
 #' Sea Bass
 #'
-#' A dataset containing the fitted parameters for the Sea Bass fisheries
+#' A dataset containing the fitted parameters for the Sea Bass fisheries from Tidbury et al. (2021).
 #'
 #' @format An object of class \code{"BioeconomicParams"}.
 #' @docType data

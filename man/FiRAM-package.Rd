@@ -9,13 +9,13 @@
 The \code{FiRAM} package implements the model from Tidbury et. al. (2021) to simulate biological and economic impacts of recreational and commercial fleets.
 }
 \details{
-Running simulations in \pkg{FiRAM} is done in 3 main stages:
+Running simulations in \code{FiRAM} is done in 3 main stages:
 \enumerate{
-\item Set up model parameters using the \code{BioeconomicParams} function.
-\item Run simulations using the \code{project} function. This creates a \code{BioeconomicSim} object.
-\item Explore results using the plotting functions (\verb{plot, plotStock, plotActivity, plotEconomicImpact})
+\item Set up model parameters using the \code{BioeconomicParams} constructor function.
+\item Run simulations using the \code{project} function and a recruitment scenario. This creates a \code{BioeconomicSim} object.
+\item Explore results by calling plotting functions (\verb{plot, plotStock, plotActivity, plotEconomicImpact}) on the \code{BioeconomicSim} object.
 }
 }
 \references{
-Hannah J Tidbury, Angela Muench, Philip D Lamb, Kieran Hyder, \"Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries\", ICES Journal of Marine Science, Volume 78, Issue 5, August 2021, Pages 1793-1803
+Hannah J Tidbury, Angela Muench, Philip D Lamb, Kieran Hyder, "Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries", \emph{ICES Journal of Marine Science}, Volume 78, Issue 5, August 2021, Pages 1793-1803
 }

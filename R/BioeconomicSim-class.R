@@ -107,7 +107,7 @@ init_states <- function(params, R, R_init, t_max){
   states$ZA[1] = params@muA + (1-params@varphi * params@delta)*states$FR[1] +  (1 - params@Gamma * params@eta)*states$FC[1]
 
   #TODO: Need help with the D values here....
-  states$D[1] = 1/6
+  states$D[1] = exp(-6*params@muJ)
 
   states$LC[1] <- params@WC*(1 - params@eta)  *states$FC[1]*(1 - exp(-states$ZA[1]))*states$SA[1] / states$ZA[1]
   states$LR[1] <- params@WR*(1 - params@delta)*states$FR[1]*(1 - exp(-states$ZA[1]))*states$SA[1] / states$ZA[1]

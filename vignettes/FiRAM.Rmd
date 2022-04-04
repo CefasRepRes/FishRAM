@@ -37,12 +37,12 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(FiRAM)
 ```
-# Introduction 
+## Introduction 
 
 * What is the model?
 * What is this document?
 
-# Setting up the model
+## Setting up the model
 
 * Loading in saved parameters
   + Changing some parameters
@@ -50,22 +50,59 @@ library(FiRAM)
 * Defining custom `BioeconomicParams` objects from a file
 
 In `FiRAM`, model parameters are contained in objects of class `BioeconomicParams`. MORE WORDS HERE.... Parameters from the Sea Bass fishery studied in @Tidbury2021 is included in the package and can be loaded from the `"seabass"`dataset.
-
-# Running the model
-
-## Specifying recruitment
-* Different recruitment specifications.
-* Making plots.
-
-
-We can load in some parameter values
 ```{r load_data}
 data("seabass")
 ```
-Then we run it
-```{r run_sim}
-sim <- project(params, R = 1000, t_start= 2000, t_end = 2040)
+## Running the model
+Models can be run by calling the `project()` function on a `BioeconomicParams` object with a specified recruitment scenario and duration.
+
+### Specifying recruitment
+
+In `FiRAM`, recruitment can be described either by explicitly defined recruitment values for each year, or as a function of the adult stock size to be calculated dynamically at each time step. Different values of the `R` parameter in the `project()` functions helps to specify this.
+
+
+#### Constant recruitment
+To run a simulation with constant recruitment, the `R` argument should be a `numeric` giving the recruitment across the full time period. The `t_start` and `t_end ` arguments specify how long the model should be run for.
+
+``` {r recruitment_constant}
+sim <- project(params, R = 7e5, t_start = 2020, t_end = 2045)
 ```
+
+#### Explicit recruitment values
+For varying, but explicitly described recruitment, the `R` argument should be a `numeric` vector of length `t_end - t_start + 1`, with each element giving the recruitment in each year.
+
+``` {r recruitment_vector}
+set.seed(123)
+# Generate log-normally distributed recruitment values.
+recruitment <- exp(rnorm(26, log(7e5), 0.5))
+sim <- project(params, R = recruitment, t_start = 2020, t_end = 2045)
+```
+
+#### Implicit recruitment functions
+To specify dynamic recruitment functions, `R` should be a `function`taking exactly one `numeric` argument. At each time step, recruitment is calculated using this function, passing through the adult stock size from the previous time step (i.e the recruitment at time $t$ is calculated as $R(SA(t-1))$ where $SA$ is the adult stock size). If `R` is a function, then the `R_init` argument must also be specified. `R_init` gives the initial recruitment at the start of the simulation.
+```{r recruitment_function}
+# Use a type II functional response for recruitment
+rec_func <- function(stock){
+  a <- 1.5e-3; b <- 7e-4; h <- 1.3e-4
+  return(
+    1000 *a*stock/(b + a*h*stock)
+  )
+}
+sim <- project(params, R = rec_func, t_start = 2020, t_end = 2045, R_init = 7e5)
+
+```
+
+## Model outputs
+
+The `project()` function returns a `BioeconomicSim` object.
+* Slots of `BioeconomicSim` objects
+* Making plots.
+* Other variables from the `states` slots
+
+
+We can load in some parameter values
+
+Then we run it
 Then we plot it
 ```{r fig.dim = c(7, 8)}
 plot(sim)
