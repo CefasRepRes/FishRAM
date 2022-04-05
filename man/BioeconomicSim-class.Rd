@@ -8,7 +8,26 @@
 A class to hold the results of a simulation.
 }
 \details{
-BioeconomicSim
+The states of the simulation at each time step are stored in the \code{states} slot of this object. The \code{states} slot contains a \eqn{T \times 17} matrix where \eqn{T} is the duration of the simulation. Each column represents a different model output and each row gives the value of those outputs at a time step. The columns in this matrix are:
+\enumerate{
+\item R - The recruitment (numbers)
+\item SJ - The size of the juvenile stock (numbers)
+\item SA - The size of the adult stock (numbers)
+\item TC - The number of commercial trips
+\item TR - The number of recreationl trips.
+\item EC - The commercial effort
+\item ER - The recreational effort
+\item FC - The commercial fishing mortality
+\item FR - The recreational fishing mortality
+\item tau - The profit of the commercial fleet
+\item K - The catch per unit effort of the recreational fleet
+\item LR - The landed catch of the recreational fleet (tonnes)
+\item LC - The landed catch of the commercial fleet (tonnes)
+\item D - The proportion of the juvenile stock that mature into the adult stock
+\item VR - The GVA of the recreational fleet
+\item VC - The GVA of the commercial fleet
+\item ZA - The total mortality on the adult stock
+}
 }
 \section{Slots}{
 

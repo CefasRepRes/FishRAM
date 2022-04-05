@@ -1,20 +1,20 @@
-# FiRAM
+# FishRAM
 
-FiRAM (Fisheries Resource Allocation Model) is an R package to simulate biological and economic processes of commercial and recreational fisheries. The model was initially developed by Tidbury et al. (2021) for use in Sea Bass fisheries, however the tools presented here are general purpose and can be applied to any fishery where simultaneous management of commercial and recreational fleets is required.
+FishRAM (Fisheries Resource Allocation Model) is an R package to simulate biological and economic processes of commercial and recreational fisheries. The model was initially developed by Tidbury et al. (2021) for use in Sea Bass fisheries, however the tools presented here are general purpose and can be applied to any fishery where simultaneous management of commercial and recreational fleets is required.
 
 ## Installation
-You can install the development version of FiRAM using the `devtools` package:
+You can install the development version of FishRAM using the `devtools` package:
 ``` r
 library(devtools)
-install_github("CefasRepRes/FiRAM")
+install_github("CefasRepRes/FishRAM")
 ```
 
 ## Example
 
-To get started with `FiRAM`, the `"seabass"` dataset contained in the package contains the `BioeconomicParams` object encapsulating the parameters for the Sea Bass fishery studied in Tidbury et al. (2021). This can be loaded in and a simulation run as follows:
+To get started with `FishRAM`, the `"seabass"` dataset contained in the package contains the `BioeconomicParams` object encapsulating the parameters for the Sea Bass fishery studied in Tidbury et al. (2021). This can be loaded in and a simulation run as follows:
 
 ``` r
-library(FiRAM)
+library(FishRAM)
 #Load in the params for Sea Bass in the North Sea
 data("seabass")
 #Change the adult mortality parameter by changing the slot in params.

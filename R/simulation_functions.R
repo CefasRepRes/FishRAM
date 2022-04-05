@@ -34,7 +34,7 @@ step = function(sim, t){
     states$TR <- params@gamma
   }
 
-  #Step 2: Translate this into effort and fishing pressure
+  #Step 2: Translate trips into effort and fishing pressure
   states$EC <- params@chiC * states$TC
   states$ER <- params@chiR * states$TR
   states$FC <- params@qC * states$EC
@@ -72,15 +72,15 @@ step = function(sim, t){
   return(states)
 }
 
-#' Project a FiRAM simulation.
+#' Project a FishRAM simulation.
 #'
-#' Runs the FiRAM model for a specified recruitment scenario. Full details of the model specification can be found in the supporting information of Tidbury et al. (2021), However some details have been extended for this package (see details below)
+#' Runs the FishRAM model for a specified recruitment scenario. Full details of the model specification can be found in the supporting information of Tidbury et al. (2021), however some details have been extended for this package (see details below).
 #' @param params An object of type `BioeconomicParams` encoding the model parameters.
 #' @param R A `numeric` of `function` specifying the recruitment of the stock across the simulation. See details
 #' @param t_start The year which forms the start of the simulation. The default is 1.
 #' @param t_end The year which forms the end of the simulation. The default is `length(R) + t_start - 1`
 #' @param R_init The initial recruitment value. Only required if `R` is a function.
-#' @return An object of class [BioeconomicSim]
+#' @return An object of class [BioeconomicSim-class]. See the `BioeconomicSim-class` help file for a full list of model outputs included in this object.
 #' @details
 #' Recruitment can be specified in 3 ways using different forms of the `R` parameter:
 #' * A `numeric` of length 1, giving the constant recruitment across the duration of the simulation.
@@ -89,7 +89,7 @@ step = function(sim, t){
 #'
 #'
 #' @section Model extensions:
-#' *Mortality reparametrisation.* To allow for a larger range of mortalities, the mortality in `FiRAM` is parametrised differently to the mortality in Tidbury et al. (2021). The stock dynamics for the adult population are instead calculated through
+#' *Mortality reparametrisation.* To allow for a larger range of mortalities, the mortality in `FishRAM` is parametrised differently to the mortality in Tidbury et al. (2021). The stock dynamics for the adult population are instead calculated through
 #' \deqn{S_{A, t} = \exp(M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t})S_{A, t-1} + D_{t}S_{J, t}}.
 #' With the landings of each fleet now calculated as
 #' \deqn{L_{R, t} = W_C \frac{(1-\delta)F_{R, t}}{M_A + (1 - \varphi \delta)F_{R, t} + (1-\Gamma \eta)F_{C, t}}S_{A, t}}
@@ -108,11 +108,13 @@ step = function(sim, t){
 #' data("seabass")
 #' sim <- project(params, R = 8606000, t_start = 1990, t_end = 2030)
 #'
-#' # Runs the simulation with 20 years of high recruitment followed by 20 years of low recruitment
+#' #Runs the simulation with 20 years of high recruitment followed
+#' #by 20 years of low recruitment
 #' R <- c(rep(23151200, 20), rep(757600, 20))
 #' sim <- project(params, R = R)
 #'
-#' #Generates recruitment from a type II functional response recruitment function with log Gaussian noise.
+#' #Generates recruitment from a type II functional response
+#' #recruitment function with log Gaussian noise.
 #' rec_func <- function(stock){
 #'   return(
 #'     1.5@*stock/(7e-4 + 1.3e-4 @* 1.5e-3 @* stock)@*exp(rnorm(1,mean=0,sd=0.9))

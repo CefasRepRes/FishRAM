@@ -46,7 +46,25 @@ setClassUnion("funcorNULL", members = c("function", "NULL"))
 #' @slot t_end The end time of the simulation.
 #' @slot states A `data.frame` containing the states of the system for each time step of the simulation.
 #' @seealso \link{BioeconomicSim}
-#' @details BioeconomicSim
+#' @details
+#' The states of the simulation at each time step are stored in the `states` slot of this object. The `states` slot contains a \eqn{T \times 17} matrix where \eqn{T} is the duration of the simulation. Each column represents a different model output and each row gives the value of those outputs at a time step. The columns in this matrix are:
+#' 1. R - The recruitment (numbers)
+#' 2. SJ - The size of the juvenile stock (numbers)
+#' 3. SA - The size of the adult stock (numbers)
+#' 4. TC - The number of commercial trips
+#' 5. TR - The number of recreationl trips.
+#' 6. EC - The commercial effort
+#' 7. ER - The recreational effort
+#' 8. FC - The commercial fishing mortality
+#' 9. FR - The recreational fishing mortality
+#' 10. tau - The profit of the commercial fleet
+#' 11. K - The catch per unit effort of the recreational fleet
+#' 12. LR - The landed catch of the recreational fleet (tonnes)
+#' 13. LC - The landed catch of the commercial fleet (tonnes)
+#' 14. D - The proportion of the juvenile stock that mature into the adult stock
+#' 15. VR - The GVA of the recreational fleet
+#' 16. VC - The GVA of the commercial fleet
+#' 17. ZA - The total mortality on the adult stock
 #' @export
 setClass(
   "BioeconomicSim",
@@ -83,7 +101,7 @@ plot.BioeconomicSim <- function(sim){
 
 init_states <- function(params, R, R_init, t_max){
 
-  state_names <- c("R", "SJ", "SA", "TC", "TR", "ER", "EC", "FC", "FR", "tau", "K", "LR", "LC", "D", "VR", "VC", "ZA")
+  state_names <- c("R", "SJ", "SA", "TC", "TR", "EC", "ER", "FC", "FR", "tau", "K", "LR", "LC", "D", "VR", "VC", "ZA")
   states <- matrix(NA, t_max, length(state_names))
   colnames(states) <- state_names
   states <- as.data.frame(states)
@@ -106,7 +124,6 @@ init_states <- function(params, R, R_init, t_max){
 
   states$ZA[1] = params@muA + (1-params@varphi * params@delta)*states$FR[1] +  (1 - params@Gamma * params@eta)*states$FC[1]
 
-  #TODO: Need help with the D values here....
   states$D[1] = exp(-6*params@muJ)
 
   states$LC[1] <- params@WC*(1 - params@eta)  *states$FC[1]*(1 - exp(-states$ZA[1]))*states$SA[1] / states$ZA[1]

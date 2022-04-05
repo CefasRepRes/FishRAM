@@ -1,0 +1,141 @@
+---
+title: "FishRAM"
+author: "James A. Martindale"
+subtitle: Fisheries Resource Allocation Model
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FishRAM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: Tidbury2021
+  title: "Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries"
+  author: 
+   - family: Tidbury
+     given: Hannah J
+   - family: Muench
+     given: Angela
+   - family: Lamb
+     given: Philip D
+   - family: Hyder
+     given: Kieran
+
+  container-title: ICES Journal of Marine Science
+  volume: 78
+  page: 1793-1803
+  type: article-journal 
+  issued: 
+    year: 2021  
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FishRAM)
+```
+## Introduction 
+
+
+The `FishRAM` model implements the bioeconomic model of @Tidbury2021, which represents biological and economic components of a simplified single-species fishery exploited by commercial and recreational fleets. The stock is split into two disjoint stocks: a juvenile stock affected by natural processes (mortality and recruitment), but unaffected by fishing, and an adult stock on which fishing acts in addition to natural processes. The commercial fleet generates revenue from the landed catch of the stock and accrues losses from the costs associated with the trips. The profitability of the commercial fleet determines if commercial activity in the fishery increases or decreases over time, up to some maximum threshold capping the total number of commercial trips. The recreational fleet is driven by the catch per unit effort (CPUE) of recreational fishers. If the CPUE is above some threshold, then recreational activity in the region increases, otherwise it decreases. The economic impact of each fleet is also described in the model. This impact is proportional to the total revenue generated for the commercial fleet, and proportional to the total expenditure of anglers for the recreational fleet.
+
+
+In this vignette, we describe how to setup parameters, run models, and explore results in the `FishRAM` package.
+
+## Setting up the model
+
+In `FishRAM`, model parameters are contained in objects of class `BioeconomicParams`. The simplest way to construct a custom `BioeconomicParams` object is reading in a csv file using the `BioeconomicParams` constructor. The csv file should contain the parameter name in the first column and the value in the second column, like this:
+``` {r params_csv_dem, echo = FALSE}
+knitr::kable(data.frame("Parameter" = c("g", "p", "b", "qC", "qR", "..."),
+           "Value" = c(0.1, 0.05, 1, 12.4, 1.1, "...")))
+
+```
+Each parameter value should be specified in this file, with no additional lines in the file. To create a `BioeconomicParams` object from this file, call the constructor as follows:
+``` {r create_params_csv, eval = FALSE}
+params <- BioeconomicParams(file = "params.csv")
+```
+In `BioeconomicParams` objects, each parameter required for the model is a slot in the object, which can be manually overwritten later. The following code changes the natural mortality on the juvenile stock.
+``` {r override_mort_params, eval = FALSE}
+params@muJ <- 0.3
+```
+Parameters from the Sea Bass fishery studied in @Tidbury2021 is included in the package and can be loaded from the `"seabass"`dataset.
+```{r load_data}
+data("seabass")
+```
+## Running the model
+Models can be run by calling the `project()` function on a `BioeconomicParams` object with a specified recruitment scenario and duration. This function outputs a `BioeconomicSim` object that contains the model results.
+
+### Specifying recruitment
+
+In `FishRAM`, recruitment can be described either by explicitly defined recruitment values for each year, or as a function of the adult stock size to be calculated dynamically at each time step. Different values of the `R` parameter in the `project()` functions help to specify this.
+
+
+#### Constant recruitment
+To run a simulation with constant recruitment, the `R` argument should be a `numeric` giving the recruitment across the full time period. The `t_start` and `t_end ` arguments specify how long the model should be run for.
+
+``` {r recruitment_constant}
+sim <- project(params, R = 7e5, t_start = 2020, t_end = 2045)
+```
+
+#### Explicit recruitment values
+For varying, but explicitly described recruitment, the `R` argument should be a `numeric` vector of length `t_end - t_start + 1`, with each element giving the recruitment in each year.
+
+``` {r recruitment_vector}
+set.seed(123)
+# Generate log-normally distributed recruitment values.
+recruitment <- exp(rnorm(26, log(7e5), 0.5))
+sim <- project(params, R = recruitment, t_start = 2020, t_end = 2045)
+```
+
+#### Implicit recruitment functions
+To specify dynamic recruitment functions, `R` should be a `function`taking exactly one `numeric` argument. At each time step, recruitment is calculated using this function, passing through the adult stock size from the previous time step (i.e the recruitment at time $t$ is calculated as $R(SA(t-1))$ where $SA$ is the adult stock size). If `R` is a function, then the `R_init` argument must also be specified. `R_init` gives the initial recruitment at the start of the simulation.
+```{r recruitment_function}
+# Use a type II functional response for recruitment
+rec_func <- function(stock){
+  a <- 1.5e-3; b <- 7e-4; h <- 1.3e-4
+  return(
+    1000 *a*stock/(b + a*h*stock)
+  )
+}
+sim <- project(params, R = rec_func, t_start = 2020, t_end = 2045, R_init = 7e5)
+
+```
+
+## Model outputs
+
+The `project()` function returns an object of class `BioeconomicSim`. The outputs of the simulation are stored in the `states` slot of this object. The `states` slot is a $T \times 17$ matrix where $T$ is the duration of the simulation. Each row in the matrix gives the states of the system at a given time step. 
+
+#### Plotting functions
+`FishRAM` contains 3 different plotting functions to explore different elements of the model outputs. The stock size over the simulation can be plotted using the `plotStock()` function
+```{r plot_stock, fig.dim = c(7, 4)}
+plotStock(sim)
+```
+
+The number of trips for each fleet can be plotted using the `plotActvity()` function
+```{r plot_activity, fig.dim = c(7, 4)}
+#Specify the fleet using the "fleet" argument.
+plotActivity(sim, fleet = "R") # The recreational fleet
+plotActivity(sim, fleet = "C") # The commercial fleet
+```
+
+The economic impact of each fleet can be plotted using the `plotEconomicImpact()` function
+```{r plot_impact, fig.dim = c(7, 4)}
+plotEconomicImpact(sim)
+```
+
+
+#### Other model outputs
+Other components of the simulator outputs can be extracted from the relevant column in the `states` matrix of the `BioeconomicSim` object.
+
+``` {r manual_plots, fig.dim = c(7, 4)}
+# Plot the profit of the commercial fleet over time
+plot.ts(sim@states$tau)
+#Plot the mortality of the adult stock over time
+plot.ts(sim@states$ZA)
+```
+
+# References
