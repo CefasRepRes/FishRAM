@@ -2,9 +2,9 @@
 #'
 #' A constructor for the `BioeconomicParams` class.
 #'@param file A csv file contatining the input parameters and their values
-#'@return An object of type \linkS4class{BioeconomicParams}
+#'@return An object of type \code{\linkS4class{BioeconomicParams}}
 #'@details
-#'The `file` params csv file should contain all parameter values required to run the model (see the \code{\linkS4Class{BioeconomicParams}} class definition for a full list of required parameters), the first column containing the parameter names and the second column containing the corresponding values.
+#'The `file` params csv file should contain all parameter values required to run the model (see the \code{\linkS4class{BioeconomicParams}} class definition for a full list of required parameters), the first column containing the parameter names and the second column containing the corresponding values.
 #'@export
 #'@examples
 #'\dontrun{

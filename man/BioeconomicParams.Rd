@@ -10,13 +10,13 @@ BioeconomicParams(file)
 \item{file}{A csv file contatining the input parameters and their values}
 }
 \value{
-An object of type \linkS4class{BioeconomicParams}
+An object of type \code{\linkS4class{BioeconomicParams}}
 }
 \description{
 A constructor for the \code{BioeconomicParams} class.
 }
 \details{
-The \code{file} params csv file should contain all parameter values required to run the model (see the \code{\linkS4Class{BioeconomicParams}} class definition for a full list of required parameters), the first column containing the parameter names and the second column containing the corresponding values.
+The \code{file} params csv file should contain all parameter values required to run the model (see the \code{\linkS4class{BioeconomicParams}} class definition for a full list of required parameters), the first column containing the parameter names and the second column containing the corresponding values.
 }
 \examples{
 \dontrun{
