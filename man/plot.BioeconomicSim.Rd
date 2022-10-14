@@ -4,7 +4,12 @@
 \alias{plot.BioeconomicSim}
 \title{Summary plot for \code{BioeconomicSim} objects.}
 \usage{
-\method{plot}{BioeconomicSim}(sim)
+\method{plot}{BioeconomicSim}(x, ...)
+}
+\arguments{
+\item{x}{A \code{BioEconomicSim} object}
+
+\item{...}{Additional plotting parameters. Currently unused.}
 }
 \description{
 After running a simulation, produces 6 plots: stock size, activity (commercial fleet), activity (recreational fleet), economic impact (total across both fleets), economic impact (commercial fleet), economic impact (recreational fleet).

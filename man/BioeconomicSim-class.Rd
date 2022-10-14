@@ -8,7 +8,7 @@
 A class to hold the results of a simulation.
 }
 \details{
-The states of the simulation at each time step are stored in the \code{states} slot of this object. The \code{states} slot contains a \eqn{T \times 17} matrix where \eqn{T} is the duration of the simulation. Each column represents a different model output and each row gives the value of those outputs at a time step. The columns in this matrix are:
+The states of the simulation at each time step are stored in the \code{states} slot of this object. The \code{states} slot contains a \eqn{T \times 20} matrix where \eqn{T} is the duration of the simulation. Each column represents a different model output and each row gives the value of those outputs at a time step. The columns in this matrix are:
 \enumerate{
 \item R - The recruitment (numbers)
 \item SJ - The size of the juvenile stock (numbers)
@@ -27,6 +27,9 @@ The states of the simulation at each time step are stored in the \code{states} s
 \item VR - The GVA of the recreational fleet
 \item VC - The GVA of the commercial fleet
 \item ZA - The total mortality on the adult stock
+\item CLim - The total catch limit (in numbers) for a given time step.
+\item CAllocCom - The proportion of CLim that is allocated to the commercial fleet
+\item CAllocRec - The proportion of CLim that is allocated to the recreational fleet
 }
 }
 \section{Slots}{
@@ -35,6 +38,8 @@ The states of the simulation at each time step are stored in the \code{states} s
 \item{\code{params}}{A \code{BioeconomicParams} object encoding the parameters for the model.}
 
 \item{\code{rec_func}}{The recruitment function}
+
+\item{\code{CLim_func}}{The function to calculate the total catch limit (across both fleets) from the adult stock size (in numbers).}
 
 \item{\code{t_start}}{The start time of the simulation.}
 

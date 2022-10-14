@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plotStock}
 \alias{plotStock}
-\title{Plot the stock for a simulation}
+\title{Plot the biological outcomes for different allocation scenarios for a simulation}
 \usage{
 plotStock(sim, stock = "B")
 }
@@ -12,7 +12,7 @@ plotStock(sim, stock = "B")
 \item{stock}{A \code{character} giving the stock desired. This should be \code{"A"} for the adult population, \code{"J"} for the juvenile population, \code{"T"} for the total population  or \code{"B"} for both stocks plotted on the same axis.}
 }
 \description{
-Plot the stock for a simulation
+Plot the biological outcomes for different allocation scenarios for a simulation
 }
 \examples{
 #load in the model parameters

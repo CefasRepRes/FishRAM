@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plotEconomicImpact}
 \alias{plotEconomicImpact}
-\title{Plot the economic impact for a simulation}
+\title{Plot the economic impact for a simulation for commercial and recreational fishing.}
 \usage{
 plotEconomicImpact(sim, fleet = "B")
 }
@@ -12,7 +12,7 @@ plotEconomicImpact(sim, fleet = "B")
 \item{fleet}{A \code{character} specifying which fleet to plot. This should be one of \code{"C"} to plot the commercial fleet, \code{"R"} to plot the recreational fleet, "T" to plot the total GVA, or \code{"B"} to plot both fleets on the same axis.}
 }
 \description{
-Plot the economic impact for a simulation
+Plot the economic impact for a simulation for commercial and recreational fishing.
 }
 \examples{
 #load in the model parameters

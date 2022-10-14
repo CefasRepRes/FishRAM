@@ -9,7 +9,9 @@ project(
   R,
   t_start = 1,
   t_end = (length(R) + t_start - 1),
-  R_init = NULL
+  R_init = NULL,
+  CLim_func = NULL,
+  CLim_alloc = NULL
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ project(
 \item{t_end}{The year which forms the end of the simulation. The default is \code{length(R) + t_start - 1}}
 
 \item{R_init}{The initial recruitment value. Only required if \code{R} is a function.}
+
+\item{CLim_func}{The catch limit function. This should be a \code{function} of the current stock size that returns the total catch limit across both fleets. The default value is \code{NULL} which corresponds to no management of the stock.}
+
+\item{CLim_alloc}{The catch allocation across both fleets. This should be a \code{numeric} of length 2 that sums to 1. The first element should be the proportion of total catch assigned to the commercial fleet, while the second element should be the proportion of total catch assigned to the recreational fleet. The default is \code{NULL} - no management.}
 }
 \value{
 An object of class \linkS4class{BioeconomicSim}. See the \code{BioeconomicSim-class} help file for a full list of model outputs included in this object.
@@ -68,10 +74,25 @@ sim <- project(params, R = R)
 #recruitment function with log Gaussian noise.
 rec_func <- function(stock){
   return(
-    1.5@*stock/(7e-4 + 1.3e-4 @* 1.5e-3 @* stock)@*exp(rnorm(1,mean=0,sd=0.9))
+    1.5*stock/(7e-4 + 1.3e-4 * 1.5e-3 * stock)*exp(rnorm(1,mean=0,sd=0.9))
   )
 }
 sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4)
+
+# Including management strategies
+# MSY as calculated by the original Tidbury paper
+CLim_func <- function(stock){
+return(0.203/(0.203 + 0.24) * stock * (1 - exp(-(0.203 + 0.24))))
+}
+# All allocated to the commercial fleet
+sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4,
+              CLim_func = CLim_func, CLim_alloc = c(1,0))
+# All allocated to the recreational fleet
+sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4,
+              CLim_func = CLim_func, CLim_alloc = c(0, 1))
+# Allocated equally across both fleets
+sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4,
+              CLim_func = CLim_func, CLim_alloc = c(0.5,0.5))
 }
 \references{
 Hannah J Tidbury, Angela Muench, Philip D Lamb, Kieran Hyder, Balancing biological and economic goals in commercial and recreational fisheries: systems modelling of sea bass fisheries, \emph{ICES Journal of Marine Science}, Volume 78, Issue 5, August 2021, Pages 1793-1803

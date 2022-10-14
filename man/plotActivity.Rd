@@ -2,7 +2,8 @@
 % Please edit documentation in R/plot_functions.R
 \name{plotActivity}
 \alias{plotActivity}
-\title{Plot the activity (number of trips) for a simulation}
+\title{Plot the activity (number of trips) for a simulation.
+Under the assumption that recreational and commercial fishers usually conduct daytrips, this indicator can be used as an effort measure.}
 \usage{
 plotActivity(sim, fleet = "B")
 }
@@ -12,7 +13,8 @@ plotActivity(sim, fleet = "B")
 \item{fleet}{A \code{character} specifying which fleet to plot. This should be one of \code{"C"} to plot the commercial fleet, \code{"R"} to plot the recreational fleet, or \code{"B"} to plot both fleets on the same axis.}
 }
 \description{
-Plot the activity (number of trips) for a simulation
+Plot the activity (number of trips) for a simulation.
+Under the assumption that recreational and commercial fishers usually conduct daytrips, this indicator can be used as an effort measure.
 }
 \examples{
 #load in the model parameters

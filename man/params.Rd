@@ -11,7 +11,7 @@ An object of class \code{"BioeconomicParams"}.
 data("seabass")
 }
 \description{
-A dataset containing the fitted parameters for the Sea Bass fisheries from Tidbury et al. (2021).
+A dataset containing the fitted parameters from Tidbury et. al. (2021). These values are designed to represent the biology of Sea bass \emph{Dicentrarchus labrax} in division  27-4.b–c (North Atlantic stock) and English inshore commercial fishing fleet and recreational anglers.
 }
 \examples{
 data("seabass")

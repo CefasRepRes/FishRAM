@@ -12,13 +12,14 @@
 #'}
 BioeconomicParams <- function(file) {
 
-  params_raw <- read.csv(file)[, 1:2]
+  params_raw <- utils::read.csv(file)[, 1:2]
   params_raw <- split(params_raw[, 2], params_raw[, 1])
 
-  bioeceonomic_params <- do.call(function(...) new('BioeconomicParams', ...), params_raw)
+  bioeceonomic_params <- do.call(function(...) methods::new('BioeconomicParams', ...), params_raw)
 
   return(bioeceonomic_params)
 }
+
 
 #### Class definition ####
 #' A class for bioeconomic parameters.

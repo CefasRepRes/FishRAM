@@ -6,7 +6,7 @@
 \alias{FishRAM}
 \title{Fisheries Resource Allocation Model}
 \description{
-The \code{FishRAM} package implements the model from Tidbury et. al. (2021) to simulate biological and economic impacts of recreational and commercial fleets.
+The \code{FishRAM} package implements the dynamic system model from Tidbury et. al. (2021) which simulates the biological and economic impacts for recreational and commercial fishing under different stock allocation scenarios. Default values are set to represent the biology of Sea bass \emph{Dicentrarchus labrax} in division  27-4.b–c (North Atlantic stock) and English inshore commercial fishing fleet and recreational anglers.
 }
 \details{
 Running simulations in \code{FishRAM} is done in 3 main stages:

@@ -1,4 +1,4 @@
-#' Plot the stock for a simulation
+#' Plot the biological outcomes for different allocation scenarios for a simulation
 #' @param sim A `BioEconomicSim` object.
 #' @param stock A `character` giving the stock desired. This should be `"A"` for the adult population, `"J"` for the juvenile population, `"T"` for the total population  or `"B"` for both stocks plotted on the same axis.
 #' @examples
@@ -57,7 +57,7 @@ plotStock <- function(sim, stock = "B"){
   )
 }
 
-#' Plot the economic impact for a simulation
+#' Plot the economic impact for a simulation for commercial and recreational fishing.
 #' @param sim A `BioEconomicSim` object.
 #' @param fleet A `character` specifying which fleet to plot. This should be one of `"C"` to plot the commercial fleet, `"R"` to plot the recreational fleet, "T" to plot the total GVA, or `"B"` to plot both fleets on the same axis.
 #' @examples
@@ -105,7 +105,8 @@ plotEconomicImpact <- function(sim, fleet = "B"){
 }
 
 
-#' Plot the activity (number of trips) for a simulation
+#' Plot the activity (number of trips) for a simulation.
+#' Under the assumption that recreational and commercial fishers usually conduct daytrips, this indicator can be used as an effort measure.
 #' @param sim A `BioEconomicSim` object.
 #' @param fleet A `character` specifying which fleet to plot. This should be one of `"C"` to plot the commercial fleet, `"R"` to plot the recreational fleet, or `"B"` to plot both fleets on the same axis.
 #' @examples

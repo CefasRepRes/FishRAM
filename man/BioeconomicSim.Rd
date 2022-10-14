@@ -4,7 +4,15 @@
 \alias{BioeconomicSim}
 \title{Constructor for the \code{BioeconomicSim} class}
 \usage{
-BioeconomicSim(params, R, t_start, t_end, R_init = NULL)
+BioeconomicSim(
+  params,
+  R,
+  t_start,
+  t_end,
+  R_init = NULL,
+  CLim_func = NULL,
+  CLim_alloc = NULL
+)
 }
 \arguments{
 \item{params}{An object of class \code{BioeconomicParams}.}
@@ -16,6 +24,10 @@ BioeconomicSim(params, R, t_start, t_end, R_init = NULL)
 \item{t_end}{An \code{integer} specifying the end time for the simulation. The default is \code{1 + length(R)}}
 
 \item{R_init}{A \code{numeric} giving the initial recruitment value. Only required if \code{R} is a function of stock size.}
+
+\item{CLim_func}{The catch limit function. This should be a \code{function} of the current stock size that returns the total catch limit across both fleets. The default value is \code{NULL} which corresponds to no management of the stock.}
+
+\item{CLim_alloc}{The catch allocation across both fleets. This should be a \code{numeric} of length 2 that sums to 1. The first element should be the proportion of total catch assigned to the commercial fleet, while the second element should be the proportion of total catch assigned to the recreational fleet. The default is \code{NULL} - no management.}
 }
 \value{
 An object of type \linkS4class{BioeconomicSim}
