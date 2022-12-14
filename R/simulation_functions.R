@@ -1,3 +1,4 @@
+
 step = function(sim, t){
 
   params <- sim@params
@@ -17,18 +18,33 @@ step = function(sim, t){
 
   #Step 1. Work out the number of trips that should occur
   #Commercial trips
-  previous_profit <- previous_states$tau
-  if(t > 2){
-    previous_profit <- sim@states[t - 2, ]$tau
+  sigmoid <-  function(x) {
+    y <- x-0.5
+    sig <- 1 / (1 + exp(-5*y))
+    sig
   }
 
+#  previous_profit <- previous_states$tau
+#  if(t > 2){
+#    previous_profit <- sim@states[t - 2, ]$tau
+#  }
+
   if (previous_profit >= 0 && previous_states$TC < params@theta){
-    states$TC <- min((1 + params@g)*previous_states$TC, params@theta)
+        states$TC <- min((1 + params@g*sigmoid((states$tau/previous_states$tau-1))*2)*previous_states$TC, params@theta)
   }else if(previous_profit < 0){
-    states$TC <- (1 - params@g)*previous_states$TC
+    states$TC <- (1 - params@g*sigmoid((states$tau/previous_states$tau-1)-1)*2)*previous_states$TC
   }else{
     states$TC <- params@theta
   }
+
+#  if (previous_profit >= 0 && previous_states$TC < params@theta){
+#    states$TC <- min((1 + params@g)*previous_states$TC, params@theta)
+#  }else if(previous_profit < 0){
+#    states$TC <- (1 - params@g)*previous_states$TC
+#  }else{
+#    states$TC <- params@theta
+#  }
+
   #...Unless there is a zero catch limit, in which case nothing goes out.
   if(states$CLim > 0 &&
      states$CAllocCom == 0){
@@ -159,7 +175,7 @@ step = function(sim, t){
 #'
 #' #Generates recruitment from a type II functional response
 #' #recruitment function with log Gaussian noise.
-#' rec_func <- function(stock){
+#'rec_func <- function(stock){
 #'   return(
 #'     1.5*stock/(7e-4 + 1.3e-4 * 1.5e-3 * stock)*exp(rnorm(1,mean=0,sd=0.9))
 #'   )
@@ -178,10 +194,11 @@ step = function(sim, t){
 #'sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4,
 #'               CLim_func = CLim_func, CLim_alloc = c(0, 1))
 #'# Allocated equally across both fleets
-#'sim <- project(params, R = rec_func, t_start = 2010, t_end = 2050, R_init = 1e4,
+#'sim <- project(params, R = R, t_start = 2010, t_end = 2050, R_init = 1e4,
 #'               CLim_func = CLim_func, CLim_alloc = c(0.5,0.5))
+
 project = function(params, R, t_start = 1, t_end = (length(R) + t_start - 1), R_init = NULL,
-                   CLim_func = NULL, CLim_alloc = NULL){
+                   CLim_func = NULL, CLim_alloc =NULL){
 
   t_max <- t_end - t_start + 1
 
@@ -202,6 +219,7 @@ project = function(params, R, t_start = 1, t_end = (length(R) + t_start - 1), R_
 
 
   sim <- BioeconomicSim(params, R, t_start, t_end, R_init, CLim_func, CLim_alloc)
+
 
   for (t in 2:t_max){
     sim@states[t, ] = step(sim, t)

@@ -120,7 +120,8 @@ init_states <- function(params, R, R_init, t_start, t_end, CLim_func, CLim_alloc
   else
     states$R[1] <- R_init
 
-  states$CLim <- -1; states$CAllocCom <- -1;states$CAllocRec <- -1 # Default values
+ states$CLim <- -1; states$CAllocCom <- -1;states$CAllocRec <- -1 # Default values
+
   if(is.function(CLim_func)){
     states$CAllocCom <- CLim_alloc[1]
     states$CAllocRec <- CLim_alloc[2]
