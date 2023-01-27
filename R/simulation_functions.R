@@ -20,7 +20,7 @@ step = function(sim, t){
   #Commercial trips
   sigmoid <-  function(x) {
     y <- x-0.5
-    sig <- 1 / (1 + exp(-0.5*y))
+    sig <- 1 / (1 + exp(-0.01*y))
     sig
   }
 
@@ -29,10 +29,10 @@ step = function(sim, t){
     previous_profit <- sim@states[t - 2, ]$tau
   }
 
-  if (previous_profit >= 0 && previous_states$TC < params@theta){
-        states$TC <- min((1 + params@g*sigmoid((states$tau/previous_states$tau-1))*2)*previous_states$TC, params@theta)
+ if (previous_profit >= 0 && previous_states$TC < params@theta){
+        states$TC <- min((1 + params@g*sigmoid((sim@states[t - 1,]$tau/previous_profit))*2)*previous_states$TC, params@theta)
   }else if(previous_profit < 0){
-    states$TC <- (1 - params@g*sigmoid((states$tau/previous_states$tau-1)-1)*2)*previous_states$TC
+    states$TC <- (1 - params@g*sigmoid((sim@states[t - 1,]$tau/previous_profit))*2)*previous_states$TC
   }else{
     states$TC <- params@theta
   }
