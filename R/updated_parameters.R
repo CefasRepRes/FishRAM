@@ -7,6 +7,8 @@ data("seabass")
 recruitment <- 20892000  #medium recruitment individuals (median  2000-2019)
 recruitment <- 11388500 #low recruitment individuals (median  2010-2019)
 #recruitment <- 3732789 #low  recruitment individuals (geo mean 2010-2019)
+#recruitment<- original high: 23,151,200; medium 8,606,000; low 757,600
+recruitment<- 8606000
 
 params@initialSA<-11509000 # fish at age data WGCSE 2022 sum age 6-16+ in 2010
 params@initialSJ<-67475000 # fish at age data WGCSE 2022 sum age 0-5 in 2010
