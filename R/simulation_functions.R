@@ -107,25 +107,25 @@ step = function(sim, t){
   }
 
 
-  catch_limit_commercial <- states$CLim * states$CAllocCom
-  catch_limit_recreation <- states$CLim * states$CAllocRec
+  catch_limit_commercial <- states$CLim * states$CAllocCom#individuals
+  catch_limit_recreation <- states$CLim * states$CAllocRec#individuals
 
-  excessCatchCommercial <- states$LC - catch_limit_commercial
-  excessCatchRecreation <- states$LR - catch_limit_recreation
+  excessCatchCommercial <- (states$LC/states$WC) - catch_limit_commercial#individuals
+  excessCatchRecreation <- (states$LR/states$WR) - catch_limit_recreation#individuals
 
   if(excessCatchCommercial > 0){
     #If you caught too many fish, you didnt land or sell them, so recalculate how much you landed and how much profit you made.
-    states$LC <- states$LC - excessCatchCommercial
+    states$LC <- states$LC - (excessCatchCommercial* states$WC)#weights
     states$tau <- params@nu * states$LC - (params@baromega * states$EC + params@Lambda * params@phi)
     states$VC  <- params@sigma * params@nu * states$LC
     #Also put them back in the water, with only some surviving
-    states$SA <- states$SA + (1 - params@Gamma)*excessCatchCommercial
+    states$SA <- states$SA + (1 - params@Gamma)*excessCatchCommercial#individuals
   }
 
   #Now do the same for the recreational fleet
   if(excessCatchRecreation > 0){
-    states$LR <- states$LC - excessCatchCommercial
-    states$SA <- states$SA + (1 - params@varphi)*excessCatchRecreation
+    states$LR <- states$LR - (excessCatchRecreation*states$WR)#weights
+    states$SA <- states$SA + (1 - params@varphi)*excessCatchRecreation#individuals
   }
   return(states)
 }
