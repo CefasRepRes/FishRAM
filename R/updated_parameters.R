@@ -19,7 +19,7 @@ params@muJ<-0.3 #adjust mortality juvenile under management
 
 
 CLim_func <- function(stock){
-  return(0.203/(0.203 + 0.24) * stock/1000 * (1 - exp(-(0.203 + 0.24))))
+  return(0.203/(0.203 + 0.24) * stock * (1 - exp(-(0.203 + 0.24))))
 }
 
 #no fishing
