@@ -38,7 +38,7 @@ BioeconomicParams <- function(file) {
 #' @slot varphi Proportion of released recreational catch that survives.
 #' @slot eta Commercial discard rate.
 #' @slot Gamma Proportion of commercial discards that survive.
-#' @slot WR Average weight of recreationally landed fish (tonnes).
+#' @slot WR Average weight of recreational landed fish (tonnes).
 #' @slot WC Average weight of commercial landed fish (tonnes).
 #' @slot nu Commercial fish price per tonnes.
 #' @slot baromega Variable cost per commercial day at sea.
