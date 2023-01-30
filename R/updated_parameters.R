@@ -19,7 +19,7 @@ params@muJ<-0.3 #adjust mortality juvenile under management
 
 
 CLim_func <- function(stock){
-  return(0.203/(0.203 + 0.24) * stock/1000 * (1 - exp(-(0.203 + 0.24))))
+  return(0.203/(0.203 + 0.24) * stock*0.0017 * (1 - exp(-(0.203 + 0.24))))
 }
 
 #no fishing
@@ -35,7 +35,11 @@ sim1<-data.frame(sim@states)
 #colnames(sim1)<-c("t","R","tau","SA","SJ","LR","LC","VR","VC","ER","EC")
 write.csv(sim1,"C://Users/am21/OneDrive - CEFAS/seabass/mncea/no_fishing.csv", row.names = F)
 plotEconomicImpact(sim)
+plotEconomicImpact(sim, fleet = "C")
+plotEconomicImpact(sim, fleet = "R")
 plotStock(sim)
+plotActivity(sim, fleet = "C")
+plotActivity(sim, fleet = "R")
 plotActivity(sim)
 
 #self-management under MSY

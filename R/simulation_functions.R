@@ -115,7 +115,7 @@ step = function(sim, t){
 
   if(excessCatchCommercial > 0){
     #If you caught too many fish, you didnt land or sell them, so recalculate how much you landed and how much profit you made.
-    states$LC <- states$LC - (excessCatchCommercial* params@WC) #weights
+    states$LC <- states$LC - (excessCatchCommercial*params@WC) #weights
     states$tau <- params@nu * states$LC - (params@baromega * states$EC + params@Lambda * params@phi)
     states$VC  <- params@sigma * params@nu * states$LC
     #Also put them back in the water, with only some surviving
